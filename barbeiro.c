@@ -19,16 +19,15 @@ enum{ClienteRapido=1, BarbeiroRapido=2, Iguais=3};
 void *barbeiro(void *arg){
 	long tid = (long) arg;
 	while(1){
-		printf("barbeiro %d ",tid);
-		printf("vai esperar por clientes!!\n");
+		printf("\033[1m\033[31mbarbeiro: %d  \033[0m\t \033[1m\033[35mvai esperar por clientes!!\n\n",tid);
 		sem_wait(&cadeiras_ocupadas); // espera por clientes
-		printf("barbeiro %d cortando cabelo\n",tid);
+		printf("\033[1m\033[31mbarbeiro: %d \033[0m\t \033[1m\033[35mcortando cabelo\n\n",tid);
 		//corta cabelo
 		if(tipo == ClienteRapido) sleep(10);
 		else if(tipo == BarbeiroRapido) sleep(1);
 		else sleep(1);
 		sem_post(&barbeiros_livres);
-		printf("barbeiro %d está livre\n",tid);
+		printf("\033[1m\033[31mbarbeiro: %d \033[0m\t \033[1m\033[35mestá livre\n\n",tid);
 		//cortou o cabelo e agora está livre
 	}
 }
@@ -37,18 +36,18 @@ void *cliente(void *arg){
 	int valor;
 	long tid = (long)arg;
 	sem_getvalue(&cadeiras_ocupadas,&valor);
-	printf("Cliente %d chegou, verificando se há cadeiras livres!!\n",tid);
+	printf("\033[1m\033[31mCliente: %d \033[0m\t \033[1m\033[35mchegou, verificando se há cadeiras livres!!\n\n\033[0m",tid);
 	if(valor < nCadeiras){
-		printf("Cliente %d: há cadeiras livres, ocupando cadeira!!\n",tid);
+		printf("\033[1m\033[31mCliente: %d \033[0m\t \033[1m\033[35mhá cadeiras livres, ocupando cadeira!!\n\n",tid);
 		sem_post(&cadeiras_ocupadas);
 		//espera barbeiro
-		printf("Cliente %d: esperando barbeiro ficar livre!!\n",tid);
+		printf("\033[1m\033[31mCliente: %d \033[0m\t \033[1m\033[35mesperando barbeiro ficar livre!!\n\n",tid);
 		sem_wait(&barbeiros_livres);
 
 		//tem cabelo cortado
-		printf("Cliente %d: finalmente o barbeiro está livre, indo cortar o cabelo!!\n",tid);
+		printf("\033[1m\033[31mCliente: %d \033[0m\t \033[1m\033[35mfinalmente o barbeiro está livre, indo cortar o cabelo!!\n\n",tid);
 	} else{
-		printf("não há cadeiras livres, cliente %d vai embora!!\n",tid);
+		printf("\033[1m\033[31mCliente: %d \033[0m\t \033[1m\033[35mnão há cadeiras livres, cliente vai embora!!\n\n",tid);
 	}
 	nClientesAtendidos++;
 }
